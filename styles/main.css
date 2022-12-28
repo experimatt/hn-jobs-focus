@@ -1,0 +1,36 @@
+.font-semibold {
+  font-weight: 600;
+}
+
+.green-300-highlight {
+  background-color: #86efac;
+}
+
+.green-400-highlight {
+  background-color: #86efac;
+}
+
+.red-300-highlight {
+  background-color: #fca5a5;
+}
+
+.red-400-highlight {
+  background-color: #f87171;
+}
+
+a {
+  color: blue;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+#saveButton {
+  cursor: pointer;
+}
+
+a#resetButton {
+  padding-left: 0.5rem;
+}

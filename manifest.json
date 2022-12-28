@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "HN Jobs Focus Mode",
+  "description": "Focus mode when viewing HN 'Who's Hiring?' posts",
+  "version": "1.0",
+  "icons": {
+    "16": "images/b-16.png",
+    "32": "images/b-32.png",
+    "48": "images/b-48.png",
+    "128": "images/b-128.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "images/b-16.png",
+      "32": "images/b-32.png",
+      "48": "images/b-48.png",
+      "128": "images/b-128.png"
+    },
+    "default_popup": "popup/popup.html"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "js": ["scripts/content.js"],
+      "css": ["styles/main.css"],
+      "matches": ["https://news.ycombinator.com/*"]
+    }
+  ]
+}
