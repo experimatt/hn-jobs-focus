@@ -6,12 +6,16 @@
 </head>
 
 <body>
-  <label for="highlight" class="font-semibold">Highlight</label>
-  <input type="text" id="highlight"><br /><br />
-  <label for="exclude" class="font-semibold">Exclude</label>
-  <input type="text" id="exclude"><br /><br />
-  <button id="saveButton">Save</button>
-  <a id="resetButton" href="">Reset</a>
+  <form id="popupForm">
+    <label for="highlight" class="font-semibold">Highlight</label>
+    <input type="text" id="highlight"><br /><br />
+    <label for="exclude" class="font-semibold">Exclude</label>
+    <input type="text" id="exclude"><br /><br />
+    <!-- <button id="saveButton" type="submit">Save</button> -->
+    <input type="submit" id="saveButton" value="Save" />
+    <a id="resetButton" href="">Reset</a>
+  </form>
+
   <script src="popup.js"></script>
 </body>
 

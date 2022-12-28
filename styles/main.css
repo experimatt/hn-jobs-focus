@@ -34,3 +34,8 @@ a:hover {
 a#resetButton {
   padding-left: 0.5rem;
 }
+
+input[type="text"],
+input[type="submit"] {
+  margin-top: 0.25rem;
+}

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "HN Jobs Focus Mode",
-  "description": "Focus mode when viewing HN 'Who's Hiring?' posts",
+  "description": "Focus mode when viewing Hacker News Who's Hiring' posts",
   "version": "1.0",
   "icons": {
     "16": "images/b-16.png",

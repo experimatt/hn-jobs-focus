@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // save form event listener
+  let popupForm = document.getElementById("popupForm");
+  popupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  // save button event listener
-  let saveButton = document.getElementById("saveButton");
-  saveButton.addEventListener("click", async () => {
     let highlightValue = document.getElementById("highlight").value;
     let excludeValue = document.getElementById("exclude").value;
 
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // send updated values to content
     await sendUpdatedValuesMessage({
       highlight: undefined,
-      exclude: undefined
+      exclude: undefined,
     });
     window.close();
   });

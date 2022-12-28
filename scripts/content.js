@@ -2,9 +2,6 @@ const container = document.querySelector("table.comment-tree");
 const comments = container.querySelectorAll("tr.athing.comtr");
 console.log(`${comments?.length} HN comments found`)
 
-// TODO: Figure out how to isolate just "Javascript" within innerHTML
-//    e.g. don't match `href="javascript:void(0)` 
-
 let values = {
   highlight: undefined,
   exclude: undefined
@@ -21,6 +18,10 @@ const getValuesFromStorage = async () => {
 
 getValuesFromStorage();
 
+const escapeRegExpString = (string) => {
+  return string.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
+
 // listen for updated values messages
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   if (message.newValues) {
@@ -36,17 +37,31 @@ const applyHighlights = (values) => {
     let highlight, exclude;
 
     if (values["highlight"]) {
-      highlight = values["highlight"];
+      highlight = escapeRegExpString(values["highlight"]);
     }
 
     if (values["exclude"]) {
-      exclude = values["exclude"];
+      exclude = escapeRegExpString(values["exclude"]);
     }
 
     comments.forEach((commentElement) => {
-      if (!!highlight && new RegExp(highlight, "i").test(commentElement.innerHTML)) {
+      const commentText = commentElement.querySelector(".commtext")?.innerHTML;
+      const highlightRegex = new RegExp(
+        `(?<![[:alpha:]])${highlight}(?!:void)(?![[:alpha:]])`,
+        "i"
+      );
+      const excludeRegex = new RegExp(
+        `(?<![[:alpha:]])${exclude}(?![[:alpha:]])`,
+        "i"
+      );
+
+      if (
+        !!highlight && highlightRegex.test(commentText)
+      ) {
         commentElement.classList.add("green-300-highlight");
-      } else if (!!exclude && new RegExp(exclude, "i").test(commentElement.innerHTML)) {
+      } else if (
+        !!exclude && excludeRegex.test(commentText)
+      ) {
         commentElement.classList.add("red-300-highlight");
       }
     });
