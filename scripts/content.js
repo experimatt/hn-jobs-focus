@@ -1,6 +1,6 @@
 const container = document.querySelector("table.comment-tree");
 const comments = container.querySelectorAll("tr.athing.comtr");
-console.log(`${comments?.length} HN comments found`)
+console.log(`${comments?.length} comments found`)
 
 let values = {
   highlight: undefined,
@@ -9,8 +9,6 @@ let values = {
 
 const getValuesFromStorage = async () => {
   chrome.storage.local.get(["highlight", "exclude"]).then((result) => {
-    console.log("stored values:", result);
-
     values = result;
     applyHighlights(values);
   });
@@ -23,9 +21,8 @@ const escapeRegExpString = (string) => {
 };
 
 // listen for updated values messages
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.newValues) {
-    console.log("updated values:", message.newValues);
     clearAllHighlights();
     applyHighlights(message.newValues);
   }
