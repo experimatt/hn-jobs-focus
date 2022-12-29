@@ -34,15 +34,16 @@ const applyHighlights = (values) => {
     let highlight, exclude;
 
     if (values["highlight"]) {
-      highlight = escapeRegExpString(values["highlight"]);
+      highlight = splitTrimAndEscapeValues(values["highlight"]);
     }
 
     if (values["exclude"]) {
-      exclude = escapeRegExpString(values["exclude"]);
+      exclude = splitTrimAndEscapeValues(values["exclude"]);
     }
 
     comments.forEach((commentElement) => {
       const commentText = commentElement.querySelector(".commtext")?.innerHTML;
+
       const highlightRegex = new RegExp(
         `(?<![[:alpha:]])${highlight}(?!:void)(?![[:alpha:]])`,
         "i"
@@ -52,17 +53,23 @@ const applyHighlights = (values) => {
         "i"
       );
 
-      if (
-        !!highlight && highlightRegex.test(commentText)
-      ) {
+      let highlightMatch = highlight && highlightRegex.test(commentText);
+      let excludeMatch = exclude && excludeRegex.test(commentText);
+
+      if (highlightMatch && excludeMatch) {
+        commentElement.classList.add("orange-300-highlight");
+      } else if (highlightMatch) {
         commentElement.classList.add("green-300-highlight");
-      } else if (
-        !!exclude && excludeRegex.test(commentText)
-      ) {
+      } else if (excludeMatch) {
         commentElement.classList.add("red-300-highlight");
       }
     });
   }
+}
+
+const splitTrimAndEscapeValues = (values) => {
+  let splitValues = values.split(",").map((v) => v.trim());
+  return splitValues.map((v) => escapeRegExpString(v)).join("|");
 }
 
 const clearAllHighlights = () => {
