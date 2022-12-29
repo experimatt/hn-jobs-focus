@@ -42,7 +42,8 @@ const applyHighlights = (values) => {
     }
 
     comments.forEach((commentElement) => {
-      const commentText = commentElement.querySelector(".commtext")?.innerHTML;
+      const commentTextElement = commentElement.querySelector(".commtext");
+      const commentText = commentTextElement?.innerHTML;
 
       const highlightRegex = new RegExp(
         `(?<![[:alpha:]])${highlight}(?!:void)(?![[:alpha:]])`,
@@ -53,6 +54,7 @@ const applyHighlights = (values) => {
         "i"
       );
 
+      // add highlight classes
       let highlightMatch = highlight && highlightRegex.test(commentText);
       let excludeMatch = exclude && excludeRegex.test(commentText);
 
@@ -62,6 +64,19 @@ const applyHighlights = (values) => {
         commentElement.classList.add("green-300-highlight");
       } else if (excludeMatch) {
         commentElement.classList.add("red-300-highlight");
+      }
+
+      // bold matching text
+      const boldMatches = (input, text) => {
+        return input.replace(
+          new RegExp(`(?<![[:alpha:]])(${text})(?![[:alpha:]])`, "igm"),
+          "<span class='font-semibold'>$1</span>"
+        );
+      }
+
+      if (highlightMatch || excludeMatch) {
+        let newCommentText = boldMatches(commentText, `${highlight}|${exclude}`);
+        commentTextElement.innerHTML = newCommentText;
       }
     });
   }
@@ -81,3 +96,24 @@ const clearAllHighlights = () => {
     commentElement.classList.remove("red-300-highlight");
   });
 }
+
+// debugging
+// let c = comments[1]
+// let cEl = c.querySelector(".commtext");
+// let cText = c?.innerHTML;
+// let h = 'Linux|Rust'
+// let hRegex = new RegExp(
+//   `(?<![[:alpha:]])${h}(?!:void)(?![[:alpha:]])`,
+//   "i"
+// );
+// let hMatch = h && hRegex.test(cText);
+
+// let newCText = cText.replace(
+//   new RegExp(`(?<![[:alpha:]])(${cText})(?![[:alpha:]])`, "igm"),
+//   "<span class='font-semibold'>$2</span>"
+// );
+
+// console.log(h, hMatch)
+// console.log('original:', cText);
+// console.log('---------------------------------------------');
+// console.log('new:', newCText);
