@@ -45,37 +45,28 @@ const applyHighlights = (values) => {
       const commentTextElement = commentElement.querySelector(".commtext");
       const commentText = commentTextElement?.innerHTML;
 
-      const highlightRegex = new RegExp(
-        `(?<![[:alpha:]])${highlight}(?!:void)(?![[:alpha:]])`,
-        "i"
-      );
-      const excludeRegex = new RegExp(
-        `(?<![[:alpha:]])${exclude}(?![[:alpha:]])`,
-        "i"
-      );
+      const highlightRegex = new RegExp(`\\b${highlight}\\b`,"igm");
+      const excludeRegex = new RegExp(`\\b${exclude}\\b`, "igm");
 
       // add highlight classes
       let highlightMatch = highlight && highlightRegex.test(commentText);
       let excludeMatch = exclude && excludeRegex.test(commentText);
 
       if (highlightMatch && excludeMatch) {
-        commentElement.classList.add("orange-300-highlight");
+        commentElement.classList.add("hn-ext-orange-300-highlight");
       } else if (highlightMatch) {
-        commentElement.classList.add("green-300-highlight");
+        commentElement.classList.add("hn-ext-green-300-highlight");
       } else if (excludeMatch) {
-        commentElement.classList.add("red-300-highlight");
+        commentElement.classList.add("hn-ext-red-300-highlight");
       }
 
       // bold matching text
-      const boldMatches = (input, text) => {
-        return input.replace(
-          new RegExp(`(?<![[:alpha:]])(${text})(?![[:alpha:]])`, "igm"),
-          "<span class='font-semibold'>$1</span>"
-        );
-      }
-
       if (highlightMatch || excludeMatch) {
-        let newCommentText = boldMatches(commentText, `${highlight}|${exclude}`);
+        newCommentText = commentText.replace(
+          new RegExp(`\\b(${highlight}|${exclude})\\b`, "igm"),
+          `<span class="hn-ext-font-semibold">$1</span>`
+        );
+
         commentTextElement.innerHTML = newCommentText;
       }
     });
@@ -88,32 +79,24 @@ const splitTrimAndEscapeValues = (values) => {
 }
 
 const clearAllHighlights = () => {
+  // remove highlights from comments
   const highlightedComments = document.querySelectorAll(
-    ".green-300-highlight, .red-300-highlight"
+    ".hn-ext-green-300-highlight, .hn-ext-red-300-highlight, .hn-ext-orange-300-highlight"
   );
   highlightedComments.forEach((commentElement) => {
-    commentElement.classList.remove("green-300-highlight");
-    commentElement.classList.remove("red-300-highlight");
+    commentElement.classList.remove("hn-ext-green-300-highlight");
+    commentElement.classList.remove("hn-ext-red-300-highlight");
+    commentElement.classList.remove("hn-ext-orange-300-highlight");
+
+    // remove bold from matching text
+    const commentTextElement = commentElement.querySelector(".commtext");
+    const commentText = commentTextElement.innerHTML;
+
+    let newCommentText = commentText.replace(
+      new RegExp(`<span class="hn-ext-font-semibold">(.*?)<\/span>`, "igm"),
+      "$1"
+    );
+
+    commentTextElement.innerHTML = newCommentText;
   });
 }
-
-// debugging
-// let c = comments[1]
-// let cEl = c.querySelector(".commtext");
-// let cText = c?.innerHTML;
-// let h = 'Linux|Rust'
-// let hRegex = new RegExp(
-//   `(?<![[:alpha:]])${h}(?!:void)(?![[:alpha:]])`,
-//   "i"
-// );
-// let hMatch = h && hRegex.test(cText);
-
-// let newCText = cText.replace(
-//   new RegExp(`(?<![[:alpha:]])(${cText})(?![[:alpha:]])`, "igm"),
-//   "<span class='font-semibold'>$2</span>"
-// );
-
-// console.log(h, hMatch)
-// console.log('original:', cText);
-// console.log('---------------------------------------------');
-// console.log('new:', newCText);
