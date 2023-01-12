@@ -45,8 +45,8 @@ const applyHighlights = (values) => {
       const commentTextElement = commentElement.querySelector(".commtext");
       const commentText = commentTextElement?.innerHTML;
 
-      const highlightRegex = new RegExp(`\\b${highlight}\\b`,"igm");
-      const excludeRegex = new RegExp(`\\b${exclude}\\b`, "igm");
+      const highlightRegex = new RegExp(`(\\b)(${highlight})(\\b)`,"igm");
+      const excludeRegex = new RegExp(`(\\b)(${exclude})(\\b)`, "igm");
 
       // add highlight classes
       let highlightMatch = highlight && highlightRegex.test(commentText);
