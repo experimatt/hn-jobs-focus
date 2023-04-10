@@ -4,11 +4,11 @@ console.log(`${comments?.length} comments found`)
 
 let values = {
   highlight: undefined,
-  exclude: undefined
+  ignore: undefined
 }
 
 const getValuesFromStorage = async () => {
-  chrome.storage.local.get(["highlight", "exclude"]).then((result) => {
+  chrome.storage.local.get(["highlightWords", "ignoreWords"]).then((result) => {
     values = result;
     applyHighlights(values);
   });
@@ -31,14 +31,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // highlight comments
 const applyHighlights = (values) => {
   if (container && comments) {
-    let highlight, exclude;
+    let highlight, ignore;
 
-    if (values["highlight"]) {
-      highlight = splitTrimAndEscapeValues(values["highlight"]);
+    if (values["highlightWords"]) {
+      highlight = splitTrimAndEscapeValues(values["highlightWords"]);
     }
 
-    if (values["exclude"]) {
-      exclude = splitTrimAndEscapeValues(values["exclude"]);
+    if (values["ignoreWords"]) {
+      ignore = splitTrimAndEscapeValues(values["ignoreWords"]);
     }
 
     comments.forEach((commentElement) => {
@@ -46,24 +46,24 @@ const applyHighlights = (values) => {
       const commentText = commentTextElement?.innerHTML;
 
       const highlightRegex = new RegExp(`(\\b)(${highlight})(\\b)`,"igm");
-      const excludeRegex = new RegExp(`(\\b)(${exclude})(\\b)`, "igm");
+      const ignoreRegex = new RegExp(`(\\b)(${ignore})(\\b)`, "igm");
 
       // add highlight classes
       let highlightMatch = highlight && highlightRegex.test(commentText);
-      let excludeMatch = exclude && excludeRegex.test(commentText);
+      let ignoreMatch = ignore && ignoreRegex.test(commentText);
 
-      if (highlightMatch && excludeMatch) {
+      if (highlightMatch && ignoreMatch) {
         commentElement.classList.add("hn-ext-orange-300-highlight");
       } else if (highlightMatch) {
         commentElement.classList.add("hn-ext-green-300-highlight");
-      } else if (excludeMatch) {
+      } else if (ignoreMatch) {
         commentElement.classList.add("hn-ext-red-300-highlight");
       }
 
       // bold matching text
-      if (highlightMatch || excludeMatch) {
+      if (highlightMatch || ignoreMatch) {
         newCommentText = commentText.replace(
-          new RegExp(`\\b(${highlight}|${exclude})\\b`, "igm"),
+          new RegExp(`\\b(${highlight}|${ignore})\\b`, "igm"),
           `<span class="hn-ext-font-semibold">$1</span>`
         );
 

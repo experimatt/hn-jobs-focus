@@ -7,12 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
   popupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    let highlightValue = document.getElementById("highlight").value;
-    let excludeValue = document.getElementById("exclude").value;
+    let highlightValue = document.getElementById("highlightWords").value;
+    let ignoreValue = document.getElementById("ignoreWords").value;
 
     let newValues = {
-      highlight: highlightValue,
-      exclude: excludeValue,
+      highlightWords: highlightValue,
+      ignoreWords: ignoreValue,
     };
 
     // update values in local storage
@@ -32,16 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
     await chrome.storage.local.clear();
 
     // clear input values
-    document.getElementById("highlight").value = "";
-    document.getElementById("exclude").value = "";
+    document.getElementById("highlightWords").value = "";
+    document.getElementById("ignoreWords").value = "";
 
     // close popup
     window.close();
 
     // send updated values message to content
     await sendUpdatedValuesMessage({
-      highlight: undefined,
-      exclude: undefined,
+      highlightWords: undefined,
+      ignoreWords: undefined,
     });
   });
 });
@@ -59,16 +59,16 @@ const sendUpdatedValuesMessage = async (values) => {
 };
 
 const loadValuesFromStorage = async () => {
-  chrome.storage.local.get(["highlight", "exclude"]).then((result) => {
+  chrome.storage.local.get(["highlightWords", "ignoreWords"]).then((result) => {
     console.log(
       "popup.js: Retrieved values from chrome storage",
-      result.highlight,
-      result.exclude
+      result.highlightWords,
+      result.ignoreWords
     );
 
-    result.highlight &&
-      (document.getElementById("highlight").value = result.highlight);
-    result.exclude &&
-      (document.getElementById("exclude").value = result.exclude);
+    result.highlightWords &&
+      (document.getElementById("highlightWords").value = result.highlightWords);
+    result.ignoreWords &&
+      (document.getElementById("ignoreWords").value = result.ignoreWords);
   });
 }
