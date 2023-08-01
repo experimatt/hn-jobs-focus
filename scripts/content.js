@@ -11,6 +11,7 @@ const getValuesFromStorage = async () => {
   chrome.storage.local.get(["highlightWords", "ignoreWords"]).then((result) => {
     values = result;
     applyHighlights(values);
+    removeUnhighlightedComments();    
   });
 }
 
@@ -98,5 +99,11 @@ const clearAllHighlights = () => {
     );
 
     commentTextElement.innerHTML = newCommentText;
+  });
+
+const removeUnhighlightedComments = () => {
+  const unhighlightedComments = document.querySelectorAll('tr.athing.comtr:not(.hn-ext-green-300-highlight)');
+  unhighlightedComments.forEach((commentElement) => {
+    commentElement.remove();
   });
 }
