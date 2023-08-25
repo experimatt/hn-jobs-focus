@@ -8,10 +8,12 @@ let values = {
 }
 
 const getValuesFromStorage = async () => {
-  chrome.storage.local.get(["highlightWords", "ignoreWords"]).then((result) => {
+  chrome.storage.local.get(["highlightWords", "ignoreWords", "removeUnhighlighted"], (result) => {
     values = result;
     applyHighlights(values);
-    removeUnhighlightedComments();    
+    if (values.removeUnhighlighted) {
+      removeUnhighlightedComments();
+    }
   });
 }
 
@@ -21,11 +23,14 @@ const escapeRegExpString = (string) => {
   return string.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 };
 
-// listen for updated values messages
+// Listen for updated values messages
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.newValues) {
     clearAllHighlights();
     applyHighlights(message.newValues);
+    if (message.newValues.removeUnhighlighted) {
+      removeUnhighlightedComments();
+    }
   }
 });
 
@@ -100,10 +105,29 @@ const clearAllHighlights = () => {
 
     commentTextElement.innerHTML = newCommentText;
   });
+}
 
 const removeUnhighlightedComments = () => {
-  const unhighlightedComments = document.querySelectorAll('tr.athing.comtr:not(.hn-ext-green-300-highlight)');
-  unhighlightedComments.forEach((commentElement) => {
-    commentElement.remove();
-  });
-}
+  const highlightedClassNames = [
+    "hn-ext-green-300-highlight",
+    "hn-ext-red-300-highlight",
+    "hn-ext-orange-300-highlight"
+  ];
+
+  if (container && comments && (values.highlightWords || values.ignoreWords)) {
+    comments.forEach((commentElement) => {
+      const commentTextElement = commentElement.querySelector(".commtext");
+      const commentText = commentTextElement?.innerHTML;
+
+      let isHighlighted = highlightedClassNames.some(className =>
+        commentElement.classList.contains(className)
+      );
+
+      if (!isHighlighted) {
+        commentElement.remove();
+      }
+    });
+  }
+};
+
+
