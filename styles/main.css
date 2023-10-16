@@ -1,3 +1,7 @@
+body {
+  width: 200px;
+}
+
 .hn-ext-font-semibold {
   font-weight: 600;
 }
@@ -12,6 +16,10 @@
 
 .hn-ext-orange-300-highlight {
   background-color: #fdba74;
+}
+
+.hn-ext-hidden {
+  display: none;
 }
 
 a {
@@ -31,7 +39,7 @@ a#resetButton {
   padding-left: 0.5rem;
 }
 
-input[type="text"],
-input[type="submit"] {
+input:not([type="checkbox"]) {
   margin-top: 0.25rem;
+  width: 100%;
 }

@@ -9,20 +9,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let highlightValue = document.getElementById("highlightWords").value;
     let ignoreValue = document.getElementById("ignoreWords").value;
+    let removeUnhighlightedValue = document.getElementById("removeUnhighlighted").checked;
 
     let newValues = {
       highlightWords: highlightValue,
       ignoreWords: ignoreValue,
+      removeUnhighlighted: removeUnhighlightedValue
     };
 
     // update values in local storage
     await chrome.storage.local.set(newValues);
 
-    // close popup
-    window.close();
-
     // send updated values message to content
     await sendUpdatedValuesMessage(newValues);
+
+    // close popup
+    window.close();
   });
 
   // reset button event listener
@@ -34,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // clear input values
     document.getElementById("highlightWords").value = "";
     document.getElementById("ignoreWords").value = "";
+    document.getElementById("removeUnhighlighted").checked = false;
 
     // close popup
     window.close();
@@ -59,16 +62,19 @@ const sendUpdatedValuesMessage = async (values) => {
 };
 
 const loadValuesFromStorage = async () => {
-  chrome.storage.local.get(["highlightWords", "ignoreWords"]).then((result) => {
-    console.log(
-      "popup.js: Retrieved values from chrome storage",
-      result.highlightWords,
-      result.ignoreWords
-    );
+  chrome.storage.local
+    .get(["highlightWords", "ignoreWords", "removeUnhighlighted"])
+    .then((result) => {
+      console.log("popup.js: Retrieved values from chrome storage:");
+      console.dir(result);
 
-    result.highlightWords &&
-      (document.getElementById("highlightWords").value = result.highlightWords);
-    result.ignoreWords &&
-      (document.getElementById("ignoreWords").value = result.ignoreWords);
-  });
-}
+      result.highlightWords &&
+        (document.getElementById("highlightWords").value =
+          result.highlightWords);
+      result.ignoreWords &&
+        (document.getElementById("ignoreWords").value = result.ignoreWords);
+      result.removeUnhighlighted &&
+        (document.getElementById("removeUnhighlighted").checked =
+          result.removeUnhighlighted);
+    });
+};

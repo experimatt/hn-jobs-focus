@@ -8,14 +8,18 @@
 <body>
   <form id="popupForm">
     <label for="highlightWords">
-        <strong>Highlight words</strong>
+      <strong>Highlight words</strong>
     </label>
     <input type="text" id="highlightWords"><br /><br />
     <label for="ignoreWords">
-      <strong>Ignore words</strong>
+      <strong>Avoid words</strong>
     </label>
     <input type="text" id="ignoreWords"><br /><br />
-    <input type="submit" id="saveButton" value="Save" />
+    <label for="removeUnhighlighted">
+      <input type="checkbox" id="removeUnhighlighted" />
+      <strong>Hide all other posts</strong>
+    </label><br /><br />
+    <input type="submit" id="saveButton" value="Save" /><br /><br />
     <a id="resetButton" href="">Reset</a>
   </form>
 
